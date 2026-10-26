@@ -41,10 +41,10 @@ export function GlobalDelivery() {
         <div data-reveal className="relative mx-auto w-full max-w-[600px]">
           <LazyGlobe />
           <div className="relative mt-4 flex flex-wrap gap-2 text-sm sm:absolute sm:bottom-6 sm:left-0 sm:mt-0 sm:flex-col">
-            <span className="inline-flex items-center gap-2 rounded-full bg-midnight/80 px-3 py-1.5 backdrop-blur">
+            <span className="inline-flex items-center gap-2 rounded-full bg-midnight/95 px-3 py-1.5">
               <MapPin aria-hidden="true" className="size-4 text-mint" /> Headquarters — Pakistan
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full bg-midnight/80 px-3 py-1.5 backdrop-blur">
+            <span className="inline-flex items-center gap-2 rounded-full bg-midnight/95 px-3 py-1.5">
               <Radio aria-hidden="true" className="size-4 text-cyan" /> Remote delivery worldwide
             </span>
           </div>

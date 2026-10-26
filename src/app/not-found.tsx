@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <section className="relative flex min-h-[80svh] items-center overflow-hidden bg-midnight text-white">
       <div aria-hidden="true" className="absolute inset-0 bg-grid opacity-40" />
-      <div aria-hidden="true" className="absolute -top-40 left-1/3 size-[520px] rounded-full bg-violet/30 blur-[130px]" />
+      <div aria-hidden="true" className="absolute -top-40 left-1/3 size-[520px] rounded-full bg-[radial-gradient(closest-side,rgb(134_93_255/0.38),transparent)]" />
       <div className="container-x relative pt-28 pb-20">
         <p className="font-display text-[clamp(5.5rem,18vw,12rem)] leading-none font-bold tracking-[-0.03em] text-gradient">404</p>
         <h1 className="mt-4 text-h2 font-semibold">This page hasn&apos;t been engineered yet.</h1>

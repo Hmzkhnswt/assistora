@@ -34,7 +34,7 @@ export function AISection() {
               <li key={s.label}>
                 <Link
                   href={serviceHref("artificial-intelligence", s.anchor)}
-                  className="group flex items-center gap-3 rounded-2xl bg-white/70 p-3 ring-1 ring-ink/[0.06] backdrop-blur transition-all hover:bg-white hover:shadow-lg"
+                  className="group flex items-center gap-3 rounded-2xl bg-white/85 p-3 ring-1 ring-ink/[0.06] transition-all hover:bg-white hover:shadow-lg"
                 >
                   <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-violet to-electric text-white transition-transform duration-500 ease-expo group-hover:rotate-[-8deg]">
                     <Icon name={s.icon} className="size-[18px]" />

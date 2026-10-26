@@ -4,6 +4,9 @@
   --color-midnight: #080d1f;
   --color-deep: #101a35;
   --color-electric: #4776ff;
+  /* Deeper electric for white-text buttons (WCAG AA 4.98:1); electric stays the accent colour */
+  --color-action: #3563f2;
+  --color-action-hover: #2c57e3;
   --color-violet: #865dff;
   --color-cyan: #35e5f5;
   --color-mint: #65f2c6;
@@ -71,6 +74,8 @@
     font-feature-settings: normal;
     letter-spacing: -0.02em;
     text-wrap: balance;
+    /* Safety net: very long words break instead of causing horizontal scroll on tiny screens */
+    overflow-wrap: break-word;
   }
   ::selection {
     background: rgb(134 93 255 / 0.25);
@@ -107,17 +112,21 @@
 }
 
 @utility text-hero {
-  font-size: clamp(2.5rem, 5.7vw, 5.5rem);
+  /* Phones: scales with the viewport so "WE ENGINEER" fits even at 320px */
+  font-size: clamp(2.1rem, 10.6vw, 4.75rem);
   line-height: 0.98;
   letter-spacing: -0.035em;
+  @media (min-width: 1024px) {
+    font-size: clamp(3.5rem, 5.7vw, 5.5rem);
+  }
 }
 @utility text-h1 {
-  font-size: clamp(2.25rem, 4.9vw, 4.4rem);
-  line-height: 1.05;
+  font-size: clamp(1.95rem, 1.2rem + 3.6vw, 4.4rem);
+  line-height: 1.06;
   letter-spacing: -0.032em;
 }
 @utility text-h2 {
-  font-size: clamp(1.9rem, 3.6vw, 3.25rem);
+  font-size: clamp(1.7rem, 1.1rem + 2.7vw, 3.25rem);
   line-height: 1.1;
   letter-spacing: -0.028em;
 }
@@ -151,21 +160,35 @@
   mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
 }
 
-/* ---------- Motion: scroll reveals (driven by MotionController) ---------- */
+/* ---------- Motion: one-shot scroll reveals (CSS transitions, toggled by MotionController) ---------- */
+:root {
+  --rise: 28px;
+}
+@media (max-width: 767px) {
+  :root {
+    --rise: 16px; /* shorter travel on phones keeps scrolling feeling direct */
+  }
+}
+@keyframes reveal-rise { from { opacity: 0; transform: translate3d(0, var(--rise), 0); } }
+@keyframes reveal-word { from { transform: translate3d(0, 108%, 0); } }
 @media (prefers-reduced-motion: no-preference) {
-  html.js [data-reveal],
-  html.js [data-reveal-stagger] > * {
+  /* Hidden until revealed — never applied if scripts fail (reveal-fallback) */
+  html.js:not(.reveal-fallback) [data-reveal]:not(.is-in),
+  html.js:not(.reveal-fallback) [data-reveal-stagger]:not(.is-in) > * {
     opacity: 0;
   }
-  html.js [data-reveal-words] .rw > span {
-    transform: translateY(108%);
+  html.js:not(.reveal-fallback) [data-reveal-words]:not(.is-in) .rw > span {
+    transform: translate3d(0, 108%, 0);
   }
-  html.js.reveal-fallback [data-reveal],
-  html.js.reveal-fallback [data-reveal-stagger] > * {
-    opacity: 1;
+  /* "backwards" fill: after the reveal the element's own styles (hover transforms etc.) apply again */
+  html.js [data-reveal].is-in {
+    animation: reveal-rise 0.95s var(--ease-expo) var(--delay, 0s) backwards;
   }
-  html.js.reveal-fallback [data-reveal-words] .rw > span {
-    transform: none;
+  html.js [data-reveal-stagger].is-in > * {
+    animation: reveal-rise 0.95s var(--ease-expo) calc(var(--i, 0) * 70ms) backwards;
+  }
+  html.js [data-reveal-words].is-in .rw > span {
+    animation: reveal-word 1s var(--ease-expo) calc(var(--i, 0) * 40ms) backwards;
   }
 }
 .rw {
@@ -179,14 +202,17 @@
   display: inline-block;
 }
 
-/* ---------- Hero intro (driven by HeroIntro) ---------- */
-html.hero-intro [data-intro="line"] > span {
-  transform: translateY(110%);
-}
-html.hero-intro [data-intro="fade"],
-html.hero-intro [data-intro="col"] {
-  opacity: 0;
-}
+/* ---------- Hero intro: pure CSS, starts at first paint (no JS / hydration dependency) ---------- */
+@keyframes intro-line { from { transform: translate3d(0, 110%, 0); } to { transform: none; } }
+@keyframes intro-rise { from { opacity: 0; transform: translate3d(0, 16px, 0); } to { opacity: 1; transform: none; } }
+/* Transform-only variant for the LCP paragraph: it is painted (and measured) immediately. */
+@keyframes intro-rise-solid { from { transform: translate3d(0, 14px, 0); } to { transform: none; } }
+@keyframes intro-col { from { opacity: 0; transform: translate3d(0, 120px, 0); } to { opacity: 1; transform: none; } }
+.intro-line > span { animation: intro-line 1.1s var(--ease-expo) var(--d, 0s) both; }
+.intro-rise { animation: intro-rise 0.9s var(--ease-expo) var(--d, 0s) both; }
+.intro-rise-solid { animation: intro-rise-solid 0.9s var(--ease-expo) var(--d, 0s) both; }
+.intro-words .rw > span { animation: intro-line 1s var(--ease-expo) calc(0.08s + var(--i, 0) * 0.04s) both; }
+.intro-col { animation: intro-col 1.6s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s) both; }
 
 /* ---------- Hero mosaic ---------- */
 .mosaic-col {
@@ -194,6 +220,45 @@ html.hero-intro [data-intro="col"] {
 }
 .mosaic-col:hover {
   animation-play-state: paused;
+}
+
+/*
+ * Rendering budget: sections below the first are skipped entirely (style, layout, paint and
+ * their CSS animations) until they approach the viewport. Works before any JavaScript runs.
+ * contain-intrinsic-size "auto" remembers each section's real height once rendered.
+ */
+main > section:not(:first-child),
+main > article ~ section,
+footer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+/* Marquee tracks start looping only once LoopClone has duplicated their items (no jump) */
+[data-loop]:not([data-cloned]) {
+  animation-play-state: paused !important;
+}
+
+/* Frozen artwork (mobile hero strip). !important is required to beat the tiles' inline animation styles. */
+.tile-still *,
+.tile-still *::before,
+.tile-still *::after {
+  animation-play-state: paused !important;
+}
+
+/* Phones: page-hero illustrations stay still so they never compete with the headline or the CPU */
+@media (max-width: 767px) {
+  .hero-visual * {
+    animation-play-state: paused !important;
+  }
+}
+
+/* Sections outside the viewport (flagged by MotionController) stop all CSS animation work */
+/* (one-shot reveals are exempt so they always finish, even when scrolled past mid-animation) */
+[data-offscreen] :not([data-reveal], [data-reveal-stagger] > *, .rw > span),
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
 }
 
 /* Elements travelling along an SVG/CSS path */
@@ -208,11 +273,13 @@ html.hero-intro [data-intro="col"] {
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .mosaic-col {
+  .mosaic-col,
+  .mosaic-row {
     animation: none !important;
   }
 }

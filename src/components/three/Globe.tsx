@@ -32,8 +32,9 @@ export default function Globe() {
     if (!el) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const compact = window.innerWidth < 768 || (navigator.hardwareConcurrency ?? 8) <= 4;
+    const renderer = new THREE.WebGLRenderer({ antialias: !compact, alpha: true, powerPreference: "low-power" });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, compact ? 1.5 : 2));
     el.appendChild(renderer.domElement);
     renderer.domElement.setAttribute("aria-hidden", "true");
 
@@ -47,7 +48,7 @@ export default function Globe() {
     scene.add(tilt);
 
     // Dotted sphere (Fibonacci distribution)
-    const COUNT = 2600;
+    const COUNT = compact ? 1400 : 2600;
     const positions = new Float32Array(COUNT * 3);
     const colors = new Float32Array(COUNT * 3);
     const cA = new THREE.Color("#4776FF");
@@ -71,7 +72,7 @@ export default function Globe() {
 
     // Inner shell to occlude back-facing dots slightly
     const shellMat = new THREE.MeshBasicMaterial({ color: "#080D1F", transparent: true, opacity: 0.72 });
-    const shell = new THREE.Mesh(new THREE.SphereGeometry(R * 0.985, 48, 48), shellMat);
+    const shell = new THREE.Mesh(new THREE.SphereGeometry(R * 0.985, 32, 32), shellMat);
     globe.add(shell);
 
     // Atmosphere
@@ -83,7 +84,7 @@ export default function Globe() {
       vertexShader: "varying vec3 vN; void main(){ vN = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }",
       fragmentShader: "uniform vec3 c; varying vec3 vN; void main(){ float i = pow(0.62 - dot(vN, vec3(0.0,0.0,1.0)), 3.0); gl_FragColor = vec4(c, 1.0) * i * 0.8; }",
     });
-    scene.add(new THREE.Mesh(new THREE.SphereGeometry(R * 1.18, 48, 48), atmoMat));
+    scene.add(new THREE.Mesh(new THREE.SphereGeometry(R * 1.18, 32, 32), atmoMat));
 
     // HQ marker
     const hq = toVec(HQ.lat, HQ.lon, R * 1.005);
@@ -97,6 +98,10 @@ export default function Globe() {
     globe.add(ring);
 
     // Arcs to service regions
+    const markerGeo = new THREE.SphereGeometry(0.016, 10, 10);
+    const pulseGeo = new THREE.SphereGeometry(0.022, 10, 10);
+    const markerMat = new THREE.MeshBasicMaterial({ color: "#ffffff" });
+    const pulseMats = [new THREE.MeshBasicMaterial({ color: "#35E5F5" }), new THREE.MeshBasicMaterial({ color: "#865DFF" })];
     const arcs = REGIONS.map((reg, i) => {
       const end = toVec(reg.lat, reg.lon, R * 1.005);
       const mid = hq.clone().add(end).multiplyScalar(0.5);
@@ -108,10 +113,10 @@ export default function Globe() {
       const mat = new THREE.LineBasicMaterial({ color: i % 2 ? "#865DFF" : "#35E5F5", transparent: true, opacity: 0.9 });
       const line = new THREE.Line(geo, mat);
       globe.add(line);
-      const marker = new THREE.Mesh(new THREE.SphereGeometry(0.016, 12, 12), new THREE.MeshBasicMaterial({ color: "#ffffff" }));
+      const marker = new THREE.Mesh(markerGeo, markerMat);
       marker.position.copy(end);
       globe.add(marker);
-      const pulse = new THREE.Mesh(new THREE.SphereGeometry(0.022, 12, 12), new THREE.MeshBasicMaterial({ color: i % 2 ? "#865DFF" : "#35E5F5" }));
+      const pulse = new THREE.Mesh(pulseGeo, pulseMats[i % 2]);
       globe.add(pulse);
       return { curve, geo, mat, pulse, offset: i * 0.37 };
     });

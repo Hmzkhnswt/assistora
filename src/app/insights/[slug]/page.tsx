@@ -85,7 +85,7 @@ export default async function ArticlePage({ params }: PageProps<"/insights/[slug
       <article>
         <header className="relative overflow-hidden bg-midnight pt-32 pb-16 text-white sm:pt-40 sm:pb-20">
           <div aria-hidden="true" className="absolute inset-0 bg-grid opacity-30" />
-          <div aria-hidden="true" className="absolute -top-40 left-1/4 size-[520px] rounded-full bg-electric/30 blur-[130px]" />
+          <div aria-hidden="true" className="absolute -top-40 left-1/4 size-[520px] rounded-full bg-[radial-gradient(closest-side,rgb(71_118_255/0.38),transparent)]" />
           <div className="container-x relative max-w-4xl">
             <Breadcrumbs
               items={[
@@ -95,10 +95,10 @@ export default async function ArticlePage({ params }: PageProps<"/insights/[slug
               className="mb-8"
             />
             <p className="inline-flex rounded-full bg-white/10 px-3 py-1 text-sm font-semibold text-cyan">{article.category}</p>
-            <h1 data-reveal-words className="mt-6 font-display text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.1] font-semibold tracking-[-0.03em] text-balance">
+            <h1 className="intro-words mt-6 font-display text-[clamp(1.9rem,3.4vw,3rem)] leading-[1.1] font-semibold tracking-[-0.03em] text-balance">
               <RevealWords text={article.title} />
             </h1>
-            <p data-reveal className="text-lead mt-6 text-slate">
+            <p className="intro-rise-solid text-lead mt-6 text-slate" style={{ ["--d" as string]: "0.3s" }}>
               {article.excerpt}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/70">

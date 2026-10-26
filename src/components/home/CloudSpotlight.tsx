@@ -72,7 +72,7 @@ export function CloudSpotlight() {
   return (
     <section aria-labelledby="cloud-title" className="relative overflow-hidden bg-midnight section-y text-white">
       <div aria-hidden="true" className="absolute inset-0 bg-grid opacity-40" />
-      <div aria-hidden="true" className="absolute -top-60 right-0 size-[640px] rounded-full bg-electric/25 blur-[140px]" />
+      <div aria-hidden="true" className="absolute -top-60 right-0 size-[640px] rounded-full bg-[radial-gradient(closest-side,rgb(71_118_255/0.31),transparent)]" />
       <div className="container-x relative">
         <div className="mb-12 grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end">
           <div>

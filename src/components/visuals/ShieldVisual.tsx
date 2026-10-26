@@ -1,7 +1,10 @@
+import { useSvgId } from "@/lib/use-svg-id";
 import { cn } from "@/lib/utils";
 
 /** Layered 3D security shield with orbiting protective rings and secure connections (CSS 3D, no WebGL). */
 export function ShieldVisual({ className }: { className?: string }) {
+  const gSvEdge = useSvgId("sv-edge");
+  const gSvFace = useSvgId("sv-face");
   const satellites = [
     { label: "IAM", angle: -150 },
     { label: "Cloud", angle: -90 },
@@ -49,21 +52,21 @@ export function ShieldVisual({ className }: { className?: string }) {
       <div className="absolute inset-[27%] motion-safe:animate-float [transform-style:preserve-3d]">
         <svg viewBox="0 0 200 230" className="size-full drop-shadow-[0_30px_60px_rgba(101,242,198,0.35)]" aria-hidden="true">
           <defs>
-            <linearGradient id="sv-face" x1="0" y1="0" x2="1" y2="1">
+            <linearGradient id={gSvFace} x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stopColor="#1d2c5c" />
               <stop offset="1" stopColor="#0a1229" />
             </linearGradient>
-            <linearGradient id="sv-edge" x1="0" y1="0" x2="1" y2="1">
+            <linearGradient id={gSvEdge} x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stopColor="#65F2C6" />
               <stop offset=".5" stopColor="#35E5F5" />
               <stop offset="1" stopColor="#4776FF" />
             </linearGradient>
           </defs>
           <path d="M100 8l82 30v64c0 56-36 98-82 118C54 200 18 158 18 102V38z" fill="#65F2C6" fillOpacity=".12" transform="translate(6 8)" />
-          <path d="M100 8l82 30v64c0 56-36 98-82 118C54 200 18 158 18 102V38z" fill="url(#sv-face)" stroke="url(#sv-edge)" strokeWidth="5" strokeLinejoin="round" />
+          <path d="M100 8l82 30v64c0 56-36 98-82 118C54 200 18 158 18 102V38z" fill={`url(#${gSvFace})`} stroke={`url(#${gSvEdge})`} strokeWidth="5" strokeLinejoin="round" />
           <path d="M100 30l60 22v50c0 42-26 74-60 90" fill="none" stroke="#fff" strokeOpacity=".12" strokeWidth="10" />
-          <rect x="72" y="98" width="56" height="46" rx="9" fill="url(#sv-edge)" />
-          <path d="M83 98V84a17 17 0 0 1 34 0v14" fill="none" stroke="url(#sv-edge)" strokeWidth="7" strokeLinecap="round" />
+          <rect x="72" y="98" width="56" height="46" rx="9" fill={`url(#${gSvEdge})`} />
+          <path d="M83 98V84a17 17 0 0 1 34 0v14" fill="none" stroke={`url(#${gSvEdge})`} strokeWidth="7" strokeLinecap="round" />
           <circle cx="100" cy="117" r="6" fill="#0a1229" />
           <rect x="97" y="117" width="6" height="14" rx="3" fill="#0a1229" />
         </svg>
@@ -75,8 +78,8 @@ export function ShieldVisual({ className }: { className?: string }) {
         return (
           <span
             key={s.label}
-            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-mint/30 bg-midnight/80 px-3 py-1.5 text-[11px] font-semibold tracking-[0.08em] text-mint uppercase backdrop-blur"
-            style={{ left: `${50 + Math.cos(a) * 43}%`, top: `${50 + Math.sin(a) * 43}%`, animation: `float ${5 + i * 0.4}s ease-in-out ${i * -0.7}s infinite` }}
+            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-mint/30 bg-midnight/95 px-2 py-1 text-[10px] font-semibold tracking-[0.06em] text-mint uppercase sm:px-3 sm:py-1.5 sm:text-[11px] sm:tracking-[0.08em]"
+            style={{ left: `${50 + Math.cos(a) * 39}%`, top: `${50 + Math.sin(a) * 41}%`, animation: `float ${5 + i * 0.4}s ease-in-out ${i * -0.7}s infinite` }}
           >
             {s.label}
           </span>

@@ -7,7 +7,7 @@ import icon from "../../../public/images/branding/assistora-icon.png";
 
 /** The Assistora app-icon mark on its own (gradient square with the "A"). */
 export function LogoMark({ className }: { className?: string }) {
-  return <Image src={icon} alt="" aria-hidden="true" sizes="96px" className={cn("size-9 shrink-0 rounded-[24%]", className)} />;
+  return <Image src={icon} alt="" aria-hidden="true" sizes="96px" className={cn("shrink-0 rounded-[24%]", className ?? "size-9")} />;
 }
 
 /** Full horizontal logo. `dark` switches to the white wordmark for dark backgrounds. */

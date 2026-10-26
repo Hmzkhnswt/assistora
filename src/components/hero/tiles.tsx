@@ -1,3 +1,4 @@
+import { useSvgId } from "@/lib/use-svg-id";
 import type { CSSProperties, ReactNode } from "react";
 import { LogoMark } from "@/components/layout/Logo";
 
@@ -39,15 +40,16 @@ function Svg({ children, label }: { children: ReactNode; label?: string }) {
 }
 
 export function CloudTile() {
+  const gTCloud = useSvgId("t-cloud");
   return (
     <Svg>
       <defs>
-        <linearGradient id="t-cloud" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={gTCloud} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#5d86ff" />
           <stop offset="1" stopColor="#2c4fd8" />
         </linearGradient>
       </defs>
-      <rect width="200" height="250" fill="url(#t-cloud)" />
+      <rect width="200" height="250" fill={`url(#${gTCloud})`} />
       <g opacity=".18" stroke="#fff">
         {Array.from({ length: 9 }, (_, i) => (
           <line key={i} x1={i * 25} y1="0" x2={i * 25} y2="250" />
@@ -77,6 +79,7 @@ export function CloudTile() {
 }
 
 export function NeuralTile() {
+  const gTNeural = useSvgId("t-neural");
   const layers = [
     [60, 110, 160],
     [45, 85, 125, 165],
@@ -93,12 +96,12 @@ export function NeuralTile() {
   return (
     <Svg>
       <defs>
-        <radialGradient id="t-neural" cx=".3" cy=".2" r="1.1">
+        <radialGradient id={gTNeural} cx=".3" cy=".2" r="1.1">
           <stop offset="0" stopColor="#a283ff" />
           <stop offset="1" stopColor="#4f2bc8" />
         </radialGradient>
       </defs>
-      <rect width="200" height="250" fill="url(#t-neural)" />
+      <rect width="200" height="250" fill={`url(#${gTNeural})`} />
       {links.map(([x1, y1, x2, y2], i) => (
         <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#fff" strokeOpacity=".28" strokeWidth="1.2" />
       ))}
@@ -118,6 +121,7 @@ export function NeuralTile() {
 }
 
 export function SecurityTile() {
+  const gTScan = useSvgId("t-scan");
   return (
     <Svg>
       <rect width="200" height="250" fill="#0b1430" />
@@ -134,9 +138,9 @@ export function SecurityTile() {
       <rect x="84" y="112" width="32" height="26" rx="5" fill="#65F2C6" />
       <path d="M90 112v-8a10 10 0 0 1 20 0v8" fill="none" stroke="#65F2C6" strokeWidth="3.5" />
       <circle cx="100" cy="124" r="3.5" fill="#0b1430" />
-      <rect x="0" y="0" width="200" height="40" fill="url(#t-scan)" style={{ animation: "scan 3.6s ease-in-out infinite" }} />
+      <rect x="0" y="0" width="200" height="40" fill={`url(#${gTScan})`} style={{ animation: "scan 3.6s ease-in-out infinite" }} />
       <defs>
-        <linearGradient id="t-scan" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={gTScan} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#65F2C6" stopOpacity="0" />
           <stop offset="1" stopColor="#65F2C6" stopOpacity=".18" />
         </linearGradient>
@@ -321,7 +325,7 @@ export function BrandTile() {
     <div className="absolute inset-0 flex flex-col justify-between bg-[linear-gradient(140deg,#4776FF,#865DFF_70%,#b07cff)] p-[9%] text-white">
       <div aria-hidden="true" className="absolute -right-10 -bottom-10 size-48 rounded-full border-[18px] border-white/10" />
       <div aria-hidden="true" className="absolute top-1/3 -right-6 size-24 rounded-full border-[10px] border-cyan/40 motion-safe:animate-[spin_20s_linear_infinite]" style={{ borderStyle: "dashed" }} />
-      <LogoMark className="relative size-[30%] min-w-11 shadow-xl" />
+      <LogoMark className="relative aspect-square h-auto w-[30%] min-w-11 shadow-xl" />
       <p className="relative font-display text-[clamp(0.95rem,1.5vw,1.4rem)] leading-[1.1] font-semibold tracking-[-0.03em]">
         We engineer
         <br />

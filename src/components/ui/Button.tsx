@@ -8,7 +8,7 @@ type Size = "md" | "lg" | "sm";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-electric text-white shadow-[0_10px_30px_-10px_rgb(71_118_255/0.8)] hover:bg-[#3a68f0] hover:shadow-[0_14px_36px_-10px_rgb(71_118_255/0.9)]",
+    "bg-action text-white shadow-[0_10px_30px_-10px_rgb(71_118_255/0.8)] hover:bg-action-hover hover:shadow-[0_14px_36px_-10px_rgb(71_118_255/0.9)]",
   secondary: "bg-ink text-white hover:bg-deep",
   outline: "border border-ink/15 text-ink hover:border-ink/40 hover:bg-ink/[0.03]",
   "outline-light": "border border-white/25 text-white hover:border-white/60 hover:bg-white/[0.06]",
@@ -18,9 +18,9 @@ const variants: Record<Variant, string> = {
 };
 
 const sizes: Record<Size, string> = {
-  sm: "h-10 px-4 text-sm gap-2",
-  md: "h-12 px-6 text-[15px] gap-2.5",
-  lg: "h-14 px-7 text-base gap-3",
+  sm: "min-h-10 py-2 px-4 text-sm gap-2",
+  md: "min-h-12 py-2.5 px-6 text-[15px] gap-2.5",
+  lg: "min-h-14 py-3 px-7 text-base gap-3",
 };
 
 export interface ButtonLinkProps {
@@ -39,7 +39,7 @@ export interface ButtonLinkProps {
 export function ButtonLink({ href, children, variant = "primary", size = "md", arrow = "right", className, track, external, ...rest }: ButtonLinkProps) {
   const Arrow = arrow === "up-right" ? ArrowUpRight : ArrowRight;
   const cls = cn(
-    "group/btn relative inline-flex shrink-0 items-center justify-center rounded-full font-semibold tracking-[-0.01em] whitespace-nowrap transition-all duration-300 ease-expo",
+    "group/btn relative inline-flex max-w-full items-center justify-center rounded-full text-center leading-snug sm:shrink-0 font-semibold tracking-[-0.01em] transition-all sm:whitespace-nowrap duration-300 ease-expo",
     variants[variant],
     sizes[size],
     className,

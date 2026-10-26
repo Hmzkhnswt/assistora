@@ -1,3 +1,4 @@
+import { useSvgId } from "@/lib/use-svg-id";
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +25,7 @@ function Card({ x, y, w, h, title, sub, color, mono }: { x: number; y: number; w
 
 /** Sources → ingestion → warehouse/lakehouse → consumption. */
 export function DataPipelineVisual({ className }: { className?: string }) {
+  const gDpCore = useSvgId("dp-core");
   const sources = ["CRM", "ERP", "Product events", "SaaS apps"];
   const outs = ["BI dashboards", "ML features", "AI retrieval"];
   return (
@@ -40,9 +42,9 @@ export function DataPipelineVisual({ className }: { className?: string }) {
         );
       })}
       <g transform="translate(206 140)">
-        <rect width="110" height="100" rx="18" fill="url(#dp-core)" />
+        <rect width="110" height="100" rx="18" fill={`url(#${gDpCore})`} />
         <defs>
-          <linearGradient id="dp-core" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id={gDpCore} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" stopColor="#4776FF" />
             <stop offset="1" stopColor="#35E5F5" />
           </linearGradient>

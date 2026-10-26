@@ -1,8 +1,10 @@
+import { useSvgId } from "@/lib/use-svg-id";
 import { engineeringProcess } from "@/data/company";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ProcessTimeline } from "./ProcessTimeline";
 
 export function ProcessSection() {
+  const gPg = useSvgId("pg");
   return (
     <section aria-labelledby="process-title" className="relative bg-white section-y">
       <div className="container-x grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
@@ -29,9 +31,9 @@ export function ProcessSection() {
                 );
               })}
               <circle cx="100" cy="100" r="70" fill="none" stroke="#35E5F5" strokeOpacity=".5" strokeDasharray="4 8" style={{ transformBox: "fill-box", transformOrigin: "center", animation: "spin 30s linear infinite" }} />
-              <circle cx="100" cy="100" r="30" fill="url(#pg)" />
+              <circle cx="100" cy="100" r="30" fill={`url(#${gPg})`} />
               <defs>
-                <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1">
+                <linearGradient id={gPg} x1="0" y1="0" x2="1" y2="1">
                   <stop offset="0" stopColor="#4776FF" />
                   <stop offset="1" stopColor="#865DFF" />
                 </linearGradient>

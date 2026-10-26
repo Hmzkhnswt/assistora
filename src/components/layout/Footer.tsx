@@ -12,10 +12,10 @@ function FooterColumn({ title, links }: { title: string; links: { label: string;
   return (
     <div>
       <h2 className="mb-5 font-sans text-[12px] font-semibold tracking-[0.18em] text-white/50 uppercase">{title}</h2>
-      <ul className="space-y-3">
+      <ul className="space-y-0.5">
         {links.map((l) => (
           <li key={l.href}>
-            <Link href={l.href} className="text-[15px] text-white/75 transition-colors hover:text-white">
+            <Link href={l.href} className="inline-block py-2 text-[15px] text-white/75 transition-colors hover:text-white">
               {l.label}
             </Link>
           </li>
@@ -52,7 +52,7 @@ export function Footer() {
   return (
     <footer className="relative overflow-hidden bg-[#050916] text-white">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-grid opacity-40" />
-      <div aria-hidden="true" className="pointer-events-none absolute -top-56 left-1/2 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-electric/25 blur-[120px] motion-safe:animate-[pulse-soft_9s_ease-in-out_infinite]" />
+      <div aria-hidden="true" className="pointer-events-none absolute -top-56 left-1/2 h-[420px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(71_118_255/0.31),transparent)] motion-safe:animate-[pulse-soft_9s_ease-in-out_infinite]" />
 
       <div className="container-x relative">
         <div className="flex flex-col gap-8 border-b border-white/10 py-14 md:flex-row md:items-end md:justify-between lg:py-20">
@@ -128,7 +128,7 @@ export function Footer() {
           </p>
           <div className="flex flex-wrap items-center gap-6">
             {legalLinks.map((l) => (
-              <Link key={l.href} href={l.href} className="hover:text-white">
+              <Link key={l.href} href={l.href} className="inline-block py-2.5 hover:text-white">
                 {l.label}
               </Link>
             ))}

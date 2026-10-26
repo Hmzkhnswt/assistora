@@ -9,7 +9,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { ServiceDirectory } from "@/components/services/ServiceDirectory";
 import { CloudPlatformTabs } from "@/components/home/CloudSpotlight";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
-import { HeroMosaic } from "@/components/hero/HeroMosaic";
+import { HeroMosaic, HeroStrip } from "@/components/hero/HeroMosaic";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { ButtonLink } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
@@ -52,9 +52,14 @@ export default function ServicesPage() {
           </>
         }
         visual={
-          <div aria-hidden="true" className="relative h-[380px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,#000_14%,#000_86%,transparent)] lg:h-[520px]">
-            <HeroMosaic />
-          </div>
+          <>
+            <div aria-hidden="true" className="relative hidden h-[520px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,#000_14%,#000_86%,transparent)] lg:block">
+              <HeroMosaic />
+            </div>
+            <div aria-hidden="true" className="lg:hidden">
+              <HeroStrip />
+            </div>
+          </>
         }
       />
 

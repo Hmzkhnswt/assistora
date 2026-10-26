@@ -43,10 +43,9 @@ export const viewport: Viewport = {
 };
 
 /**
- * Runs before first paint: enables JS-only reveal styles, arms the homepage hero intro,
- * and adds a fallback so content can never stay hidden if scripts fail to load.
+ * Runs before first paint: enables JS-only reveal styles and adds a fallback so content can never stay hidden if scripts fail to load.
  */
-const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;if(!rm&&location.pathname==='/'){d.classList.add('hero-intro');setTimeout(function(){d.classList.remove('hero-intro')},4000)}setTimeout(function(){if(!d.dataset.motion)d.classList.add('reveal-fallback')},5000)})();`;
+const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');setTimeout(function(){if(!d.dataset.motion)d.classList.add('reveal-fallback')},5000)})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -57,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <a
           href="#main"
-          className="sr-only rounded-full bg-electric px-5 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100]"
+          className="sr-only rounded-full bg-action px-5 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100]"
         >
           Skip to content
         </a>

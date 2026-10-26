@@ -10,7 +10,7 @@ import { CTABanner } from "@/components/ui/CTABanner";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
 import { CertificationShowcase } from "@/components/home/CertificationsSection";
 import { LazyGlobe } from "@/components/three/LazyGlobe";
-import { HeroMosaic } from "@/components/hero/HeroMosaic";
+import { HeroMosaic, HeroStrip } from "@/components/hero/HeroMosaic";
 
 export const metadata = buildMetadata({
   title: "About Assistora — Global Technology Engineering, Headquartered in Pakistan",
@@ -37,9 +37,14 @@ export default function AboutPage() {
           </>
         }
         visual={
-          <div aria-hidden="true" className="relative h-[360px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,#000_14%,#000_86%,transparent)] lg:h-[480px]">
-            <HeroMosaic />
-          </div>
+          <>
+            <div aria-hidden="true" className="relative hidden h-[480px] overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,#000_14%,#000_86%,transparent)] lg:block">
+              <HeroMosaic />
+            </div>
+            <div aria-hidden="true" className="lg:hidden">
+              <HeroStrip />
+            </div>
+          </>
         }
       />
 
@@ -122,7 +127,7 @@ export default function AboutPage() {
           <SectionHeading id="values-title" eyebrow="Core values" title="What we stand for." className="mb-12" />
           <ul data-reveal-stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {company.values.map((v) => (
-              <li key={v.title} className="group rounded-[24px] bg-white/80 p-7 ring-1 ring-ink/[0.06] backdrop-blur transition-all hover:bg-white hover:shadow-xl">
+              <li key={v.title} className="group rounded-[24px] bg-white/80 p-7 ring-1 ring-ink/[0.06] transition-all hover:bg-white hover:shadow-xl">
                 <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-br from-violet to-electric text-white transition-transform duration-500 ease-expo group-hover:rotate-[-8deg]">
                   <Icon name={v.icon} className="size-6" />
                 </span>

@@ -24,7 +24,7 @@ export function ArticleCard({ article, featured = false, className }: { article:
       <div className={cn("relative overflow-hidden bg-gradient-to-br", categoryArt[article.category] ?? "from-electric to-violet", featured ? "aspect-[16/8]" : "aspect-[16/9]")}>
         <div aria-hidden="true" className="absolute inset-0 bg-grid opacity-60" />
         <div aria-hidden="true" className="absolute -right-8 -bottom-16 size-56 rounded-full border-[28px] border-white/15 transition-transform duration-700 ease-expo group-hover:scale-110" />
-        <div aria-hidden="true" className="absolute top-6 left-6 size-16 rounded-2xl border border-white/30 bg-white/10 backdrop-blur" />
+        <div aria-hidden="true" className="absolute top-6 left-6 size-16 rounded-2xl border border-white/30 bg-white/10" />
         <span className="absolute bottom-5 left-5 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ink">{article.category}</span>
       </div>
       <div className="flex flex-1 flex-col p-6">

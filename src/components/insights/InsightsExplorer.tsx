@@ -32,7 +32,7 @@ export function InsightsExplorer({ articles, categories }: { articles: Article[]
               aria-pressed={category === c}
               onClick={() => setCategory(c)}
               className={cn(
-                "h-10 rounded-full px-4 text-sm font-semibold transition-colors",
+                "h-11 rounded-full px-4 text-sm font-semibold transition-colors",
                 category === c ? "bg-ink text-white" : "bg-white text-ink/70 ring-1 ring-ink/10 hover:text-ink",
               )}
             >

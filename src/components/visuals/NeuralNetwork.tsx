@@ -33,7 +33,11 @@ export function NeuralNetwork({ className, dense = false }: { className?: string
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const layers = dense ? LAYERS.map((n) => n + 2) : LAYERS;
+    // Capability-based density: fewer nodes/signals on narrow or low-core devices.
+    const compact = window.innerWidth < 640 || (navigator.hardwareConcurrency ?? 8) <= 4;
+    const base = compact ? [3, 5, 6, 5, 3] : LAYERS;
+    const layers = dense && !compact ? base.map((n) => n + 2) : base;
+    const maxSignals = compact ? 18 : 40;
 
     let w = 0;
     let h = 0;
@@ -48,7 +52,7 @@ export function NeuralNetwork({ className, dense = false }: { className?: string
 
     function build() {
       const rect = canvas!.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, compact ? 1.5 : 2);
       w = rect.width;
       h = rect.height;
       canvas!.width = Math.round(w * dpr);
@@ -152,7 +156,7 @@ export function NeuralNetwork({ className, dense = false }: { className?: string
       spawnAcc += dt;
       if (spawnAcc > 0.16) {
         spawnAcc = 0;
-        if (signals.length < 40) spawn();
+        if (signals.length < maxSignals) spawn();
       }
       draw(time, dt);
       if (visible) raf = requestAnimationFrame(loop);

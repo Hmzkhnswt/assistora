@@ -59,15 +59,26 @@ for (const [vpName, vp] of Object.entries(viewports)) {
     const res = await page.goto(BASE + route, { waitUntil: "networkidle" });
     const status = res?.status() ?? 0;
     await scrollThrough(page);
+    // Off-screen sections use content-visibility:auto, so their computed styles can be stale.
+    // Re-check any element that looks hidden after bringing it on screen, as a user would see it.
+    const stillHidden = await page.evaluate(async () => {
+      const suspects = [...document.querySelectorAll("[data-reveal], [data-reveal-stagger] > *")].filter(
+        (el) => el.getBoundingClientRect().height > 0 && parseFloat(getComputedStyle(el).opacity) < 0.95,
+      );
+      let n = 0;
+      for (const el of suspects) {
+        el.scrollIntoView({ block: "center" });
+        await new Promise((r) => setTimeout(r, 1100));
+        if (parseFloat(getComputedStyle(el).opacity) < 0.95) n++;
+      }
+      return n;
+    });
     const m = await page.evaluate(() => {
       const de = document.documentElement;
-      const hidden = [...document.querySelectorAll("[data-reveal], [data-reveal-stagger] > *")].filter((el) => {
-        const r = el.getBoundingClientRect();
-        return r.height > 0 && parseFloat(getComputedStyle(el).opacity) < 0.95;
-      }).length;
+      const hidden = 0;
       const bodyOverflow = getComputedStyle(document.body).overflowY;
       // Masked text (word reveals + hero lines) must have settled back into its mask.
-      const masked = [...document.querySelectorAll(".rw > span, [data-intro='line'] > span")].filter((el) => {
+      const masked = [...document.querySelectorAll(".rw > span, .intro-line > span")].filter((el) => {
         const r = el.getBoundingClientRect();
         const pr = el.parentElement.getBoundingClientRect();
         return r.height > 0 && Math.abs(r.top - pr.top) > 4;
@@ -84,11 +95,11 @@ for (const [vpName, vp] of Object.entries(viewports)) {
         links: [...document.querySelectorAll("a[href]")].map((a) => a.getAttribute("href")),
       };
     });
-    const ok = status === 200 && m.overflowX <= 1 && m.hidden === 0 && m.h1 === 1 && errors.length === 0 && m.bodyOverflow !== "hidden" && !!m.canonical && !!m.description;
+    const ok = status === 200 && m.overflowX <= 1 && m.hidden + stillHidden === 0 && m.h1 === 1 && errors.length === 0 && m.bodyOverflow !== "hidden" && !!m.canonical && !!m.description;
     check(
       ok,
       `[${vpName}] ${route}`,
-      ok ? `200 · ${m.title.slice(0, 60)}` : JSON.stringify({ status, overflowX: m.overflowX, hidden: m.hidden, h1: m.h1, canonical: !!m.canonical, desc: !!m.description, bodyOverflow: m.bodyOverflow, errors: errors.slice(0, 4) }),
+      ok ? `200 · ${m.title.slice(0, 60)}` : JSON.stringify({ status, overflowX: m.overflowX, hidden: m.hidden + stillHidden, h1: m.h1, canonical: !!m.canonical, desc: !!m.description, bodyOverflow: m.bodyOverflow, errors: errors.slice(0, 4) }),
     );
     if (vpName === "desktop" && !m.scrollable && route !== "/404") fail(`[desktop] ${route} scrolls`, "page not scrollable");
     for (const href of m.links) if (href.startsWith("/")) internalLinks.set(href, route);
@@ -254,12 +265,11 @@ try {
   await page.goto(BASE + "/", { waitUntil: "networkidle" });
   await page.waitForTimeout(500);
   const state = await page.evaluate(() => ({
-    intro: document.documentElement.classList.contains("hero-intro"),
-    lineTransform: getComputedStyle(document.querySelector('[data-intro="line"] > span')).transform,
+    lineTransform: getComputedStyle(document.querySelector(".intro-line > span")).transform,
     hiddenReveal: [...document.querySelectorAll("[data-reveal]")].filter((el) => parseFloat(getComputedStyle(el).opacity) < 0.95).length,
     colAnim: getComputedStyle(document.querySelector(".mosaic-col")).animationName,
   }));
-  check(!state.intro && state.lineTransform === "none" && state.hiddenReveal === 0 && state.colAnim === "none", "reduced motion: content visible, mosaic static", JSON.stringify(state));
+  check(["none", "matrix(1, 0, 0, 1, 0, 0)"].includes(state.lineTransform) && state.hiddenReveal === 0 && state.colAnim === "none", "reduced motion: content visible, mosaic static", JSON.stringify(state));
   check(errors.length === 0, "reduced motion: no console errors", errors.join("; "));
   await ctx.close();
 } catch (e) {
@@ -268,20 +278,33 @@ try {
 
 // ---------------------------------------------------------------- responsive sweep (no horizontal overflow)
 try {
-  const widths = [360, 375, 390, 430, 768, 1024, 1280, 1440, 1920];
-  const sample = ["/", "/services", "/services/devops-platform-engineering", "/solutions/cloud-migration", "/industries/logistics", "/about", "/contact"];
+  const widths = [320, 360, 375, 390, 430, 600, 768, 1024, 1280, 1440, 1920];
+  const sample = ["/", "/services", "/services/cloud-computing", "/services/devops-platform-engineering", "/solutions/cloud-migration", "/solutions", "/industries", "/industries/logistics", "/about", "/insights", "/insights/rag-in-production", "/contact"];
   const issues = [];
   for (const w of widths) {
     const { ctx, page } = await newPage({ width: w, height: 900 });
     for (const r of sample) {
       await page.goto(BASE + r, { waitUntil: "networkidle" });
-      const over = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-      if (over > 1) issues.push(`${w}px ${r} overflow ${over}px`);
+      const res = await page.evaluate(() => ({
+        over: document.documentElement.scrollWidth - window.innerWidth,
+        // Headings whose text is wider than their box are being clipped or spilling out.
+        clipped: [...document.querySelectorAll("h1, h2, h3")]
+          .filter((h) => h.getClientRects().length && h.scrollWidth > h.clientWidth + 2)
+          .map((h) => h.textContent.trim().slice(0, 40)),
+        // Visible text/controls extending past the viewport edge (catches overflow hidden by overflow:hidden parents).
+        offscreen: [...document.querySelectorAll("main p, main h1, main h2, main h3, main a, main button, main li")]
+          .filter((el) => !el.closest('[aria-hidden="true"], .mask-fade-x, [role="tablist"], [hidden]') && el.getClientRects().length)
+          .filter((el) => { const r = el.getBoundingClientRect(); return r.width > 0 && (r.right > window.innerWidth + 1 || r.left < -1); })
+          .map((el) => `${el.tagName.toLowerCase()}:${(el.textContent || "").trim().slice(0, 30)}`),
+      }));
+      if (res.offscreen.length) issues.push(`${w}px ${r} off-screen: ${res.offscreen.slice(0, 3).join(" / ")}`);
+      if (res.over > 1) issues.push(`${w}px ${r} overflow ${res.over}px`);
+      if (res.clipped.length) issues.push(`${w}px ${r} clipped heading: ${res.clipped.join(" / ")}`);
     }
     if (w === 1024 || w === 1920 || w === 360) await page.goto(BASE + "/", { waitUntil: "networkidle" }), await page.waitForTimeout(2500), await page.screenshot({ path: `${SHOTS}hero-${w}.png` });
     await ctx.close();
   }
-  check(issues.length === 0, "no horizontal overflow at 360–1920px", issues.join("; ") || `${widths.length} widths × ${sample.length} pages`);
+  check(issues.length === 0, "no horizontal overflow or clipped headings at 320–1920px", issues.join("; ") || `${widths.length} widths × ${sample.length} pages`);
 } catch (e) {
   fail("responsive sweep (no horizontal overflow) block", String(e).split("\n")[0]);
 }

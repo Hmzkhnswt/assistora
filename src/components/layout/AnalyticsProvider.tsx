@@ -68,7 +68,7 @@ function ConsentManager({ gtmId }: { gtmId: string }) {
             We use optional analytics cookies to understand how our website is used and improve it. You can accept or decline — the site works either way.
           </p>
           <div className="mt-4 flex gap-2">
-            <button type="button" onClick={() => setConsent("granted")} className="h-10 rounded-full bg-electric px-5 text-sm font-semibold">
+            <button type="button" onClick={() => setConsent("granted")} className="h-10 rounded-full bg-action px-5 text-sm font-semibold">
               Accept analytics
             </button>
             <button type="button" onClick={() => setConsent("denied")} className="h-10 rounded-full border border-white/20 px-5 text-sm font-semibold">

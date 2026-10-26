@@ -9,7 +9,7 @@ export function RevealWords({ text }: { text: string }) {
       {words.map((w, i) => (
         <Fragment key={i}>
           <span className="rw">
-            <span>{w}</span>
+            <span style={{ ["--i" as string]: i }}>{w}</span>
           </span>
           {i < words.length - 1 ? " " : null}
         </Fragment>

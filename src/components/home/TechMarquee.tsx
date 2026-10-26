@@ -2,32 +2,33 @@ import { marqueeTechnologies } from "@/data/technologies";
 import { BrandGlyph } from "@/components/ui/TechBadge";
 import { RevealWords } from "@/components/ui/SectionHeading";
 import { cn } from "@/lib/utils";
+import { LoopClone } from "@/components/animations/LoopClone";
 
 function Row({ reverse = false }: { reverse?: boolean }) {
   const items = reverse ? [...marqueeTechnologies].reverse() : marqueeTechnologies;
   return (
     <div className="mask-fade-x flex overflow-hidden">
-      <ul
-        className={cn("flex shrink-0 gap-3 pr-3 motion-safe:animate-marquee hover:[animation-play-state:paused]", reverse && "[animation-direction:reverse]")}
+      <LoopClone
+        as="ul"
+        className={cn("flex shrink-0 motion-safe:animate-marquee hover:[animation-play-state:paused]", reverse && "[animation-direction:reverse]")}
         style={{ animationDuration: reverse ? "54s" : "46s" }}
       >
-        {[...items, ...items].map((t, i) => (
+        {items.map((t) => (
           <li
-            key={`${t.name}-${i}`}
-            aria-hidden={i >= items.length || undefined}
-            className="group flex h-16 items-center gap-3 rounded-2xl border border-ink/[0.07] bg-cloud px-6 text-[17px] font-semibold whitespace-nowrap text-ink/55 transition-colors duration-300 hover:border-electric/30 hover:text-ink"
+            key={t.name}
+            className="group mr-3 flex h-16 items-center gap-3 rounded-2xl border border-ink/[0.07] bg-cloud px-6 text-[17px] font-semibold whitespace-nowrap text-ink/75 transition-colors duration-300 hover:border-electric/30 hover:text-ink"
           >
             {t.icon ? (
-              <BrandGlyph name={t.name} className="size-5 text-ink/45 transition-colors group-hover:text-electric" />
+              <BrandGlyph name={t.name} className="size-5 text-ink/60 transition-colors group-hover:text-electric" />
             ) : (
-              <span aria-hidden="true" className="grid size-5 place-items-center rounded-md bg-ink/10 text-[9px] font-bold text-ink/60">
+              <span aria-hidden="true" className="grid size-5 place-items-center rounded-md bg-ink/10 text-[9px] font-bold text-ink/80">
                 {t.name.slice(0, 2).toUpperCase()}
               </span>
             )}
             {t.name}
           </li>
         ))}
-      </ul>
+      </LoopClone>
     </div>
   );
 }

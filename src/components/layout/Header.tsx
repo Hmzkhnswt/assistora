@@ -35,7 +35,10 @@ export function Header() {
 
   useEffect(() => {
     let last = window.scrollY;
-    const onScroll = () => {
+    let frame = 0;
+    // Read scroll position at most once per frame; state setters bail out when unchanged.
+    const update = () => {
+      frame = 0;
       const y = window.scrollY;
       setScrolled(y > 8);
       if (Math.abs(y - last) > 6) {
@@ -43,9 +46,15 @@ export function Header() {
         last = y;
       }
     };
-    onScroll();
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   // Escape + outside click handling.
@@ -79,9 +88,13 @@ export function Header() {
     const root = document.documentElement;
     const prev = root.style.overflow;
     root.style.overflow = "hidden";
+    // Keep keyboard and screen-reader focus inside the open menu.
+    const background = [document.getElementById("main"), document.querySelector("footer")].filter(Boolean) as HTMLElement[];
+    background.forEach((el) => el.setAttribute("inert", ""));
     mobileRef.current?.querySelector<HTMLElement>("a,button")?.focus();
     return () => {
       root.style.overflow = prev;
+      background.forEach((el) => el.removeAttribute("inert"));
     };
   }, [mobileOpen]);
 
@@ -121,7 +134,7 @@ export function Header() {
       >
         <div
           className={cn(
-            "relative rounded-b-[22px] bg-white/95 backdrop-blur-xl transition-shadow duration-300",
+            "relative rounded-b-[22px] bg-white transition-shadow duration-300",
             scrolled || megaOpen
               ? "shadow-[0_0_0_1px_rgb(11_17_36/0.06),0_18px_40px_-22px_rgb(8_13_31/0.45)]"
               : "shadow-[0_0_0_1px_rgb(11_17_36/0.05),0_16px_36px_-26px_rgb(8_13_31/0.35)]",
@@ -186,7 +199,7 @@ export function Header() {
               <Link
                 href={contactHref(undefined, "header")}
                 data-track="header-lets-talk"
-                className="group hidden h-12 items-center gap-2 rounded-[16px] bg-ink pr-2 pl-5 text-[15px] font-semibold whitespace-nowrap text-white transition-colors hover:bg-electric sm:inline-flex"
+                className="group hidden h-12 items-center gap-2 rounded-[16px] bg-ink pr-2 pl-5 text-[15px] font-semibold whitespace-nowrap text-white transition-colors hover:bg-action sm:inline-flex"
               >
                 {siteConfig.cta.primary}
                 <span className="grid size-8 place-items-center rounded-full bg-white/12 transition-transform duration-300 ease-expo group-hover:rotate-45">
@@ -280,7 +293,7 @@ function MegaMenuPanel({ onNavigate }: { onNavigate: () => void }) {
           <Link
             href="/services"
             onClick={onNavigate}
-            className="group inline-flex h-10 items-center gap-2 rounded-full bg-ink px-5 text-sm font-semibold text-white transition-colors hover:bg-electric"
+            className="group inline-flex h-10 items-center gap-2 rounded-full bg-ink px-5 text-sm font-semibold text-white transition-colors hover:bg-action"
           >
             Explore all services
             <ArrowRight aria-hidden="true" className="size-4 transition-transform group-hover:translate-x-0.5" />
@@ -325,7 +338,7 @@ function MobileMenu({ isActive, onNavigate }: { isActive: (href: string) => bool
                           aria-expanded={open}
                           aria-controls={`m-${group.category}`}
                           onClick={() => setOpenGroup(open ? null : group.category)}
-                          className="flex w-full items-center justify-between py-3 text-left text-[15px] font-semibold text-ink/85"
+                          className="flex min-h-12 w-full items-center justify-between py-3 text-left text-[15px] font-semibold text-ink/85"
                         >
                           {group.title}
                           <ChevronDown aria-hidden="true" className={cn("size-4 transition-transform", open && "rotate-180")} />
@@ -333,7 +346,7 @@ function MobileMenu({ isActive, onNavigate }: { isActive: (href: string) => bool
                         <ul id={`m-${group.category}`} hidden={!open} className="mb-2 space-y-1 border-l-2 border-electric/30 pl-3">
                           {group.links.map((link) => (
                             <li key={link.label}>
-                              <Link href={serviceHref(link.service, link.anchor)} onClick={onNavigate} className="flex items-center gap-2.5 py-2 text-[15px] text-ink/75">
+                              <Link href={serviceHref(link.service, link.anchor)} onClick={onNavigate} className="flex min-h-11 items-center gap-2.5 py-2.5 text-[15px] text-ink/75">
                                 <Icon name={link.icon} className="size-4 text-electric" />
                                 {link.label}
                               </Link>
@@ -366,7 +379,7 @@ function MobileMenu({ isActive, onNavigate }: { isActive: (href: string) => bool
           href={contactHref(undefined, "mobile-menu")}
           onClick={onNavigate}
           data-track="mobile-lets-talk"
-          className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-electric text-base font-semibold text-white"
+          className="flex h-14 items-center justify-center gap-2 rounded-2xl bg-action text-base font-semibold text-white"
         >
           {siteConfig.cta.primary} <ArrowUpRight aria-hidden="true" className="size-5" />
         </Link>

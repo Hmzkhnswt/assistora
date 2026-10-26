@@ -85,7 +85,7 @@ export default async function ContactPage({ searchParams }: PageProps<"/contact"
                 )}
                 {linkedin && (
                   <li className="flex gap-4">
-                    <span aria-hidden="true" className="mt-0.5 grid size-5 place-items-center rounded bg-electric text-[10px] font-bold text-white">
+                    <span aria-hidden="true" className="mt-0.5 grid size-5 place-items-center rounded bg-action text-[10px] font-bold text-white">
                       in
                     </span>
                     <div>

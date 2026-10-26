@@ -21,7 +21,7 @@ export function FinalCTA() {
             );
           })}
         </svg>
-        <div aria-hidden="true" className="absolute -top-40 left-1/4 size-[520px] rounded-full bg-cyan/30 blur-[120px]" />
+        <div aria-hidden="true" className="absolute -top-40 left-1/4 size-[520px] rounded-full bg-[radial-gradient(closest-side,rgb(53_229_245/0.38),transparent)]" />
         <div className="relative mx-auto max-w-4xl text-center">
           <h2 id="final-cta-title" data-reveal-words className="text-h1 font-semibold text-balance">
             <RevealWords text="Your Next Big Idea Deserves Exceptional Engineering." />

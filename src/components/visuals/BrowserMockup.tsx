@@ -1,7 +1,9 @@
+import { useSvgId } from "@/lib/use-svg-id";
 import { cn } from "@/lib/utils";
 
 /** Stylised, animated web application interface (abstract UI — no fabricated data). */
 export function BrowserMockup({ className }: { className?: string }) {
+  const gBmArea = useSvgId("bm-area");
   return (
     <div className={cn("overflow-hidden rounded-[20px] bg-white shadow-[0_50px_100px_-40px_rgb(8_13_31/0.55)] ring-1 ring-ink/10", className)} role="img" aria-label="Animated web application interface">
       <div className="flex items-center gap-3 border-b border-ink/[0.06] bg-cloud px-4 py-3">
@@ -45,7 +47,7 @@ export function BrowserMockup({ className }: { className?: string }) {
           <div className="rounded-xl bg-cloud p-3 ring-1 ring-ink/[0.05]">
             <svg viewBox="0 0 300 90" className="h-24 w-full" aria-hidden="true">
               <defs>
-                <linearGradient id="bm-area" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient id={gBmArea} x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0" stopColor="#4776FF" stopOpacity=".3" />
                   <stop offset="1" stopColor="#4776FF" stopOpacity="0" />
                 </linearGradient>
@@ -53,7 +55,7 @@ export function BrowserMockup({ className }: { className?: string }) {
               {[20, 45, 70].map((y) => (
                 <line key={y} x1="0" x2="300" y1={y} y2={y} stroke="#0b1124" strokeOpacity=".06" />
               ))}
-              <path d="M0 70C30 64 45 40 75 44s45 22 75 10 40-34 75-30 50 18 75 4V90H0z" fill="url(#bm-area)" />
+              <path d="M0 70C30 64 45 40 75 44s45 22 75 10 40-34 75-30 50 18 75 4V90H0z" fill={`url(#${gBmArea})`} />
               <path
                 d="M0 70C30 64 45 40 75 44s45 22 75 10 40-34 75-30 50 18 75 4"
                 fill="none"

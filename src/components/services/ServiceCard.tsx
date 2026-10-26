@@ -23,7 +23,7 @@ function ServiceArt({ service, index, wide, className }: { service: Service; ind
       <div className={cn("absolute top-1/2 left-1/2 aspect-[4/5] -translate-x-1/2 -translate-y-1/2 rotate-[-5deg] overflow-hidden rounded-[18px] shadow-[0_30px_60px_-20px_rgb(0_0_0/0.75)] ring-1 ring-white/15 transition-transform duration-700 ease-expo group-hover:rotate-0 group-hover:scale-[1.05]", wide ? "h-[82%] lg:h-auto lg:w-[74%]" : "h-[82%]")}>
         <Cmp />
       </div>
-      <span className="absolute top-4 left-4 grid size-10 place-items-center rounded-xl bg-white/10 text-white ring-1 ring-white/15 backdrop-blur-md">
+      <span className="absolute top-4 left-4 grid size-10 place-items-center rounded-xl bg-white/10 text-white ring-1 ring-white/15">
         <Icon name={service.icon} className="size-5" />
       </span>
       {index !== undefined && <span className="absolute top-4 right-5 font-display text-sm font-medium text-white/50">{String(index + 1).padStart(2, "0")}</span>}

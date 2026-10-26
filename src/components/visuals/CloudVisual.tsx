@@ -1,3 +1,4 @@
+import { useSvgId } from "@/lib/use-svg-id";
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
@@ -18,14 +19,16 @@ const flowPath = (x: number, y: number) => {
 
 /** Multi-cloud architecture illustration: three provider environments joined by a central architecture hub. */
 export function CloudVisual({ active, className }: { active?: CloudPlatform | null; className?: string }) {
+  const gCvCore = useSvgId("cv-core");
+  const gCvHub = useSvgId("cv-hub");
   return (
     <svg viewBox="0 0 520 440" className={cn("h-auto w-full", className)} role="img" aria-label="Multi-cloud architecture connecting AWS, Google Cloud and Microsoft Azure through a central platform">
       <defs>
-        <radialGradient id="cv-hub" cx=".5" cy=".5" r=".6">
+        <radialGradient id={gCvHub} cx=".5" cy=".5" r=".6">
           <stop offset="0" stopColor="#865DFF" stopOpacity=".55" />
           <stop offset="1" stopColor="#865DFF" stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="cv-core" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={gCvCore} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#4776FF" />
           <stop offset="1" stopColor="#865DFF" />
         </linearGradient>
@@ -40,7 +43,7 @@ export function CloudVisual({ active, className }: { active?: CloudPlatform | nu
         ))}
       </g>
 
-      <circle cx={HUB.x} cy={HUB.y} r="150" fill="url(#cv-hub)" />
+      <circle cx={HUB.x} cy={HUB.y} r="150" fill={`url(#${gCvHub})`} />
       <circle cx={HUB.x} cy={HUB.y} r="118" fill="none" stroke="#fff" strokeOpacity=".08" strokeDasharray="3 9" style={{ transformBox: "fill-box", transformOrigin: "center", animation: "spin 60s linear infinite" }} />
 
       {nodes.map((n) => {
@@ -90,7 +93,7 @@ export function CloudVisual({ active, className }: { active?: CloudPlatform | nu
       })}
 
       <g transform={`translate(${HUB.x} ${HUB.y})`}>
-        <rect x="-58" y="-40" width="116" height="80" rx="20" fill="url(#cv-core)" />
+        <rect x="-58" y="-40" width="116" height="80" rx="20" fill={`url(#${gCvCore})`} />
         <rect x="-58" y="-40" width="116" height="80" rx="20" fill="none" stroke="#fff" strokeOpacity=".35" />
         <path d="M-17 14 0-20 17 14M-10 4h22" fill="none" stroke="#fff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
         <circle cx="0" cy="-20" r="4" fill="#35E5F5" />

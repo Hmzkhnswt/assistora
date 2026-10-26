@@ -1,7 +1,9 @@
+import { useSvgId } from "@/lib/use-svg-id";
 import type { CSSProperties } from "react";
 
 /** Compact animated delivery loop used as the DevOps hero illustration. */
 export function PipelineMini() {
+  const gPmG = useSvgId("pm-g");
   const loop = "M260 200C200 120 90 120 90 200s110 80 170 0 170-80 170 0-110 80-170 0Z";
   const labels = [
     ["Plan", 70, 112], ["Code", 30, 210], ["Build", 70, 300], ["Test", 200, 236],
@@ -10,14 +12,14 @@ export function PipelineMini() {
   return (
     <svg viewBox="0 0 520 400" className="h-auto w-full" role="img" aria-label="Continuous delivery loop: plan, code, build, test, release, deploy, operate and monitor">
       <defs>
-        <linearGradient id="pm-g" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id={gPmG} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0" stopColor="#35E5F5" />
           <stop offset=".5" stopColor="#4776FF" />
           <stop offset="1" stopColor="#865DFF" />
         </linearGradient>
       </defs>
-      <path d={loop} fill="none" stroke="url(#pm-g)" strokeOpacity=".2" strokeWidth="34" strokeLinecap="round" />
-      <path d={loop} fill="none" stroke="url(#pm-g)" strokeWidth="3" strokeDasharray="8 10" style={{ animation: "dash 1.2s linear infinite" }} />
+      <path d={loop} fill="none" stroke={`url(#${gPmG})`} strokeOpacity=".2" strokeWidth="34" strokeLinecap="round" />
+      <path d={loop} fill="none" stroke={`url(#${gPmG})`} strokeWidth="3" strokeDasharray="8 10" style={{ animation: "dash 1.2s linear infinite" }} />
       {[0, 1, 2, 3, 4].map((i) => (
         <circle key={i} r={i === 0 ? 8 : 5} fill={i % 2 ? "#865DFF" : "#35E5F5"} style={{ offsetPath: `path("${loop}")`, animation: `travel 7s linear ${i * -1.4}s infinite` } as CSSProperties} />
       ))}

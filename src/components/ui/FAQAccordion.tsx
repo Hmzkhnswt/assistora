@@ -31,10 +31,10 @@ export function FAQAccordion({ faqs, dark = false }: { faqs: FAQ[]; dark?: boole
                   className={cn(
                     "grid size-9 shrink-0 place-items-center rounded-full border transition-all duration-300 ease-expo",
                     dark ? "border-white/15" : "border-ink/15",
-                    isOpen && "rotate-45 border-transparent bg-electric text-white",
+                    isOpen && "border-transparent bg-electric text-white",
                   )}
                 >
-                  <Plus className="size-4" />
+                  <Plus className={cn("size-4 transition-transform duration-300 ease-expo", isOpen && "rotate-45")} />
                 </span>
               </button>
             </h3>

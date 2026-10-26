@@ -278,7 +278,7 @@ export function ContactForm({ defaultService, source }: { defaultService?: strin
         <button
           type="submit"
           disabled={isSubmitting}
-          className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-electric px-8 text-base font-semibold text-white shadow-[0_10px_30px_-10px_rgb(71_118_255/0.8)] transition-colors hover:bg-[#3a68f0] disabled:cursor-wait disabled:opacity-70"
+          className="group inline-flex h-14 items-center justify-center gap-3 rounded-full bg-action px-8 text-base font-semibold text-white shadow-[0_10px_30px_-10px_rgb(71_118_255/0.8)] transition-colors hover:bg-action-hover disabled:cursor-wait disabled:opacity-70"
         >
           {isSubmitting ? (
             <>

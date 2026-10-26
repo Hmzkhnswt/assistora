@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 function ScreenOnboard() {
   return (
     <div className="flex h-full w-full shrink-0 flex-col justify-between bg-gradient-to-b from-violet to-electric p-5 text-white">
-      <div className="mt-6 size-14 rounded-2xl bg-white/20 backdrop-blur" />
+      <div className="mt-6 size-14 rounded-2xl bg-white/20" />
       <div>
         <div className="h-4 w-4/5 rounded bg-white" />
         <div className="mt-2 h-4 w-3/5 rounded bg-white" />
